@@ -7,8 +7,8 @@ public class GameManager : MonoBehaviour
     public GameObject Player;
     GameObject BoardManager;
     BoardManager BoardManager_Script;
-    int Player_row = 2;
-    int Player_col = 3;
+    public int Player_row = 2;
+    public int Player_col = 3;
     int[] Player_Pos = new int[4];
     //int[] Swap_Pos = new int[4];
 
@@ -69,6 +69,7 @@ public class GameManager : MonoBehaviour
         BoardManager.SendMessage("SwapGem", Player_Pos);
         BoardManager.SendMessage("LoadBoard", Player_Pos);
         BoardManager.SendMessage("PlacePlayer", Player_Pos);
-        BoardManager.SendMessage("CheckMatch", Player_Pos);
+        BoardManager.SendMessage("CheckMatchVer", Player_Pos);
+        BoardManager.SendMessage("CheckMatchHor", Player_Pos);
     }
 }

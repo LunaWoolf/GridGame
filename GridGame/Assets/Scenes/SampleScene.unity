@@ -227,6 +227,7 @@ MonoBehaviour:
   Gems: {fileID: 7200826857897688216, guid: c913b22734987414292939e3822089b6, type: 3}
   Player_Perfab: {fileID: 67529000729646145, guid: 32f26e8af5a4543a19c062dd864f5774,
     type: 3}
+  GameManager: {fileID: 1970907651}
 --- !u!4 &1842928305
 Transform:
   m_ObjectHideFlags: 0
@@ -271,6 +272,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 67529000729646145, guid: 32f26e8af5a4543a19c062dd864f5774, type: 3}
+  Player_row: 2
+  Player_col: 3
 --- !u!4 &1970907653
 Transform:
   m_ObjectHideFlags: 0

@@ -10,6 +10,8 @@ public class BoardManager : MonoBehaviour
     public Sprite Gem_Image;
     public GameObject Gems;
     public GameObject Player_Perfab;
+    public GameObject GameManager;
+    GameManager GameManager_Script;
     GameObject Player;
     int[] Player_Pos_Start = new int[4];
 
@@ -19,6 +21,9 @@ public class BoardManager : MonoBehaviour
         Player_Pos_Start[1] = 3;
         Player_Pos_Start[2] = 2;
         Player_Pos_Start[3] = 3;
+        //GameManager = GameObject.Find("GameManager");
+        GameManager_Script = GameManager.GetComponent<GameManager>();
+
         LoadStartBoard();
         //PlacePlayer(Player_Pos_Start);
     }
@@ -32,6 +37,7 @@ public class BoardManager : MonoBehaviour
     {
         Player = Instantiate(Player_Perfab);
         Player.transform.position = new Vector3(2, 3 - 1, 0);
+
         for (int i = 0; i < row; i++)
         {
             for (int j = 0; j < col; j++)
@@ -71,9 +77,10 @@ public class BoardManager : MonoBehaviour
             }
 
         }
-        CheckMatch(Player_Pos_Start);
-
+        CheckMatchVer(Player_Pos_Start);
+        CheckMatchHor(Player_Pos_Start);
     }
+
 
     void LoadBoard(int[] Player_Pos)
     {
@@ -124,6 +131,8 @@ public class BoardManager : MonoBehaviour
             }
 
         }
+        CheckMatchVer(Player_Pos);
+        CheckMatchHor(Player_Pos);
     }
 
 
@@ -145,7 +154,7 @@ public class BoardManager : MonoBehaviour
     }
 
 
-    void CheckMatch(int[] Player_Pos)
+    void CheckMatchVer(int[] Player_Pos)
     {
         int match = 0;
         int oldnumber = 0;
@@ -157,6 +166,28 @@ public class BoardManager : MonoBehaviour
                 if (newnumber == oldnumber)
                 {
                     match++;
+                    if(j == col - 1)
+                    {
+                        if (match >= 2)
+                        {
+                            Debug.Log("match");
+                            Debug.Log(match);
+                            Gems_List[i, j] = 0;
+                            Gems_List[i, j - 1] = 0;
+                            Gems_List[i, j - 2] = 0;
+                            if (match == 3)
+                            {
+                                Gems_List[i, j - 3] = 0;
+                            }
+                            if (match == 4)
+                            {
+                                Gems_List[i, j - 4] = 0;
+                            }
+                            match = 0;
+                            GemsFall(Player_Pos);
+                        }
+                        match = 0;
+                    }
                 }
                 else
                 {
@@ -167,14 +198,14 @@ public class BoardManager : MonoBehaviour
                         Gems_List[i, j - 1] = 0;
                         Gems_List[i, j - 2] = 0;
                         Gems_List[i, j - 3] = 0;
-                        /*if (match == 3)
+                        if (match == 3)
                         {
-                            Gems_List[row, col - 4] = 0;
+                            Gems_List[i, j - 4] = 0;
                         }
                         if (match == 4)
                         {
-                            Gems_List[row, col - 4] = 0;
-                        }*/
+                            Gems_List[i, j - 5] = 0;
+                        }
                         match = 0;
                         GemsFall(Player_Pos);
                     }
@@ -186,22 +217,144 @@ public class BoardManager : MonoBehaviour
             match = 0;
             oldnumber = 0;
         }
+
+    }
+
+    //_______________________________________________________________
+
+    void CheckMatchHor(int[] Player_Pos)
+    {
+        int match_Hor = 0;
+        int oldnumber_Hor = 0;
+        for (int j = 0; j < col; j++)
+        {
+            for (int i = 0; i < row; i++)
+            {
+                int newnumber_Hor = Gems_List[i, j];
+                if (newnumber_Hor == oldnumber_Hor)
+                {
+                    match_Hor++;
+
+                    if (i == row - 1)
+                    {
+                        if (match_Hor >= 2)
+                        {
+                            Debug.Log("match");
+                            Debug.Log(match_Hor);
+                            Gems_List[i, j] = 0;
+                            Gems_List[i - 1, j] = 0;
+                            Gems_List[i - 2, j] = 0;
+                            if (match_Hor == 3)
+                            {
+                                Gems_List[i - 3, j] = 0;
+                            }
+                            if (match_Hor == 4)
+                            {
+                                Gems_List[i - 4, j] = 0;
+                            }
+                            match_Hor = 0;
+                            GemsFall(Player_Pos);
+                        }
+                        match_Hor = 0;
+                    }
+                }
+                else
+                {
+                    if (match_Hor >= 2)
+                    {
+                        Debug.Log("match");
+                        Debug.Log(match_Hor);
+                        Gems_List[i - 1, j] = 0;
+                        Gems_List[i - 2, j] = 0;
+                        Gems_List[i - 3, j] = 0;
+                        if (match_Hor == 3)
+                        {
+                            Gems_List[i - 4, j] = 0;
+                        }
+                        if (match_Hor == 4)
+                        {
+                            Gems_List[i - 5, j] = 0;
+                        }
+                        match_Hor = 0;
+                        GemsFall(Player_Pos);
+                    }
+                    match_Hor = 0;
+                }
+                oldnumber_Hor = Gems_List[i, j];
+            }
+
+            match_Hor = 0;
+            oldnumber_Hor = 0;
+        }
+
     }
 
     void GemsFall(int[] Player_Pos)
     {
         for (int i = 0; i < row; i++)
         {
-            for (int j = 0; j < col -1; j++)
+            for (int j = 0; j < col; j++)
             {
                 if (Gems_List[i, j] == 0)
                 {
-                    Gems_List[i, j] = Gems_List[i, j + 1];
-                    Gems_List[i, j + 1] = 0;
+                    if(j + 1 < col && Gems_List[i, j + 1] != 0)
+                    {
+                        Gems_List[i, j] = Gems_List[i, j + 1];
+                        Gems_List[i, j + 1] = 0;
+                    }
+                    else if (j + 2 < col && Gems_List[i, j + 2] != 0)
+                    {
+                        Gems_List[i, j] = Gems_List[i, j + 2];
+                        Gems_List[i, j + 2] = 0;
+                    }
+                    else if (j + 3 < col && Gems_List[i, j + 3] != 0)
+                    {
+                        Gems_List[i, j] = Gems_List[i, j + 3];
+                        Gems_List[i, j + 3] = 0;
+                    }
+                    else if (j + 4 < col && Gems_List[i, j + 4] != 0)
+                    {
+                        Gems_List[i, j] = Gems_List[i, j + 4];
+                        Gems_List[i, j + 4] = 0;
+                    }
+                    else if (j + 5 < col && Gems_List[i, j + 5] != 0)
+                    {
+                        Gems_List[i, j] = Gems_List[i, j + 5];
+                        Gems_List[i, j + 5] = 0;
+                    }
+                    else if (j + 6 < col && Gems_List[i, j + 6] != 0)
+                    {
+                        Gems_List[i, j] = Gems_List[i, j + 6];
+                        Gems_List[i, j + 6] = 0;
+                    }
+
+                }
+            }
+
+        }
+
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < col; j++)
+            {
+                if (Gems_List[i, j] == 7)
+                {
+                    GameManager_Script.Player_row = i;
+                    GameManager_Script.Player_col = j;
+                    Player_Pos[0] = i;
+                    Player_Pos[1] = j;
+                    Player_Pos[2] = i;
+                    Player_Pos[3] = j;
                 }
             }
         }
-        //——————————————————————————————————————————————————————
+
+                GemsRenew(Player_Pos);
+    }
+
+
+    void GemsRenew(int[] Player_Pos)
+    {
         for (int i = 0; i < row; i++)
         {
             for (int j = 0; j < col; j++)
@@ -214,6 +367,7 @@ public class BoardManager : MonoBehaviour
         }
 
         LoadBoard(Player_Pos);
+
     }
 
 
