@@ -1,16 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class BoardManager : MonoBehaviour
 {
     int row = 5;
     int col = 7;
+    int score = 0;
     public int[,] Gems_List = new int[5, 7];
     public Sprite Gem_Image;
     public GameObject Gems;
     public GameObject Player_Perfab;
     public GameObject GameManager;
+    public GameObject Score;
+    TextMeshProUGUI Score_Text;
     GameManager GameManager_Script;
     GameObject Player;
     int[] Player_Pos_Start = new int[4];
@@ -21,7 +26,8 @@ public class BoardManager : MonoBehaviour
         Player_Pos_Start[1] = 3;
         Player_Pos_Start[2] = 2;
         Player_Pos_Start[3] = 3;
-        //GameManager = GameObject.Find("GameManager");
+        Score = GameObject.Find("Score_Number");
+        Score_Text = Score.GetComponent<TextMeshProUGUI>();
         GameManager_Script = GameManager.GetComponent<GameManager>();
 
         LoadStartBoard();
@@ -79,6 +85,8 @@ public class BoardManager : MonoBehaviour
         }
         CheckMatchVer(Player_Pos_Start);
         CheckMatchHor(Player_Pos_Start);
+        score = 0;
+        Score_Text.text = score.ToString();
     }
 
 
@@ -175,18 +183,22 @@ public class BoardManager : MonoBehaviour
                             Gems_List[i, j] = 0;
                             Gems_List[i, j - 1] = 0;
                             Gems_List[i, j - 2] = 0;
+                            score += 3;
                             if (match == 3)
                             {
                                 Gems_List[i, j - 3] = 0;
+                                score += 1;
                             }
                             if (match == 4)
                             {
                                 Gems_List[i, j - 4] = 0;
+                                score += 1;
                             }
                             match = 0;
                             GemsFall(Player_Pos);
                         }
                         match = 0;
+                        Score_Text.text = score.ToString();
                     }
                 }
                 else
@@ -198,18 +210,22 @@ public class BoardManager : MonoBehaviour
                         Gems_List[i, j - 1] = 0;
                         Gems_List[i, j - 2] = 0;
                         Gems_List[i, j - 3] = 0;
+                        score += 3;
                         if (match == 3)
                         {
                             Gems_List[i, j - 4] = 0;
+                            score += 1;
                         }
                         if (match == 4)
                         {
                             Gems_List[i, j - 5] = 0;
+                            score += 1;
                         }
                         match = 0;
                         GemsFall(Player_Pos);
                     }
                     match = 0;
+                    Score_Text.text = score.ToString();
                 }
                 oldnumber = Gems_List[i, j];
             }
@@ -243,19 +259,23 @@ public class BoardManager : MonoBehaviour
                             Debug.Log(match_Hor);
                             Gems_List[i, j] = 0;
                             Gems_List[i - 1, j] = 0;
-                            Gems_List[i - 2, j] = 0;
+                            Gems_List[i - 2, j] = 0; 
+                            score += 3;
                             if (match_Hor == 3)
                             {
                                 Gems_List[i - 3, j] = 0;
+                                score += 1;
                             }
                             if (match_Hor == 4)
                             {
                                 Gems_List[i - 4, j] = 0;
+                                score += 1;
                             }
                             match_Hor = 0;
                             GemsFall(Player_Pos);
                         }
                         match_Hor = 0;
+                        Score_Text.text = score.ToString();
                     }
                 }
                 else
@@ -267,18 +287,22 @@ public class BoardManager : MonoBehaviour
                         Gems_List[i - 1, j] = 0;
                         Gems_List[i - 2, j] = 0;
                         Gems_List[i - 3, j] = 0;
+                        score += 3;
                         if (match_Hor == 3)
                         {
                             Gems_List[i - 4, j] = 0;
+                            score += 1;
                         }
                         if (match_Hor == 4)
                         {
                             Gems_List[i - 5, j] = 0;
+                            score += 1;
                         }
                         match_Hor = 0;
                         GemsFall(Player_Pos);
                     }
                     match_Hor = 0;
+                    Score_Text.text = score.ToString();
                 }
                 oldnumber_Hor = Gems_List[i, j];
             }
