@@ -57,22 +57,22 @@ public class BoardManager : MonoBehaviour
                     switch (Gems_List[i, j])
                     {
                         case 1:
-                            SpriteRender.color = Color.red;
+                            SpriteRender.color = new Color(1, 0.6f, 0.6f, 1); // red
                             break;
                         case 2:
-                            SpriteRender.color = Color.blue;
+                            SpriteRender.color = new Color(0.7f, 1, 1, 1);
                             break;
                         case 3:
-                            SpriteRender.color = Color.green;
+                            SpriteRender.color = new Color(0.6f, 1, 0.7f, 1);
                             break;
                         case 4:
-                            SpriteRender.color = Color.yellow;
+                            SpriteRender.color = new Color(1, 1, 0.5f, 1);
                             break;
                         case 5:
-                            SpriteRender.color = new Color(1, 0.6f, 0, 1);
+                            SpriteRender.color = new Color(1, 0.7f, 0.3f, 1); // orange
                             break;
                         case 6:
-                            SpriteRender.color = new Color(0.6f, 0.3f, 0.9f, 1);
+                            SpriteRender.color = new Color(0.7f, 0.6f, 1, 1); // purple
                             break;
 
                     }
@@ -114,22 +114,22 @@ public class BoardManager : MonoBehaviour
                     switch (Gems_List[i, j])
                     {
                         case 1:
-                            SpriteRender.color = Color.red;
+                            SpriteRender.color = new Color(1, 0.6f, 0.6f, 1); // red
                             break;
                         case 2:
-                            SpriteRender.color = Color.blue;
+                            SpriteRender.color = new Color(0.7f, 1, 1, 1);
                             break;
                         case 3:
-                            SpriteRender.color = Color.green;
+                            SpriteRender.color = new Color(0.6f, 1, 0.7f, 1);
                             break;
                         case 4:
-                            SpriteRender.color = Color.yellow;
+                            SpriteRender.color = new Color(1, 1, 0.5f, 1); 
                             break;
                         case 5:
-                            SpriteRender.color = new Color(1, 0.6f, 0, 1);
+                            SpriteRender.color = new Color(1, 0.7f, 0.3f, 1); // orange
                             break;
                         case 6:
-                            SpriteRender.color = new Color(0.6f, 0.3f, 0.9f, 1);
+                            SpriteRender.color = new Color(0.7f, 0.6f, 1, 1); // purple
                             break;
                     }
                     Gem.transform.position = new Vector3(i, j - 1, 0);
