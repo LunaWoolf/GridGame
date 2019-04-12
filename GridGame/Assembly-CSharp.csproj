@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Assets\BoardManager.cs" />
     <Compile Include="Assets\GameManager.cs" />
+    <Compile Include="Assets\Particle.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />

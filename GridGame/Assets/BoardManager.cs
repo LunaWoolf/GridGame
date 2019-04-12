@@ -9,12 +9,14 @@ public class BoardManager : MonoBehaviour
     int row = 5;
     int col = 7;
     int score = 0;
+    public bool start = false;
     public int[,] Gems_List = new int[5, 7];
     public Sprite Gem_Image;
     public GameObject Gems;
     public GameObject Player_Perfab;
     public GameObject GameManager;
     public GameObject Score;
+    public GameObject Particles;
     TextMeshProUGUI Score_Text;
     GameManager GameManager_Script;
     GameObject Player;
@@ -31,7 +33,7 @@ public class BoardManager : MonoBehaviour
         GameManager_Script = GameManager.GetComponent<GameManager>();
 
         LoadStartBoard();
-        //PlacePlayer(Player_Pos_Start);
+
     }
 
     void Update()
@@ -41,14 +43,13 @@ public class BoardManager : MonoBehaviour
 
     void LoadStartBoard()
     {
-        Player = Instantiate(Player_Perfab);
-        Player.transform.position = new Vector3(2, 3 - 1, 0);
 
         for (int i = 0; i < row; i++)
         {
             for (int j = 0; j < col; j++)
             {
-                Gems_List[i, j] = Random.Range(1, 7);
+
+                Gems_List[i, j] = Random.Range(1, 6);
                 Gems_List[2, 3] = 7;
                 if (Gems_List[i, j] != 7)
                 {
@@ -71,9 +72,7 @@ public class BoardManager : MonoBehaviour
                         case 5:
                             SpriteRender.color = new Color(1, 0.7f, 0.3f, 1); // orange
                             break;
-                        case 6:
-                            SpriteRender.color = new Color(0.7f, 0.6f, 1, 1); // purple
-                            break;
+                    
 
                     }
                     Gem.transform.position = new Vector3(i, j - 1, 0);
@@ -85,8 +84,27 @@ public class BoardManager : MonoBehaviour
         }
         CheckMatchVer(Player_Pos_Start);
         CheckMatchHor(Player_Pos_Start);
+
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < col; j++)
+            {
+                if (Gems_List[i, j] == 0)
+                {
+                    GameObject Gem = Instantiate(Gems);
+                    SpriteRenderer SpriteRender = Gem.GetComponent<SpriteRenderer>();
+                    SpriteRender.color = new Color(0.7f, 0.6f, 1, 1); 
+                    Gem.transform.position = new Vector3(i, j - 1, 0);
+                }
+
+            }
+        }
+        Player = Instantiate(Player_Perfab);
+        Player.transform.position = new Vector3(2, 3 - 1, 0);
         score = 0;
+        start = true;
         Score_Text.text = score.ToString();
+
     }
 
 
@@ -123,7 +141,7 @@ public class BoardManager : MonoBehaviour
                             SpriteRender.color = new Color(0.6f, 1, 0.7f, 1);
                             break;
                         case 4:
-                            SpriteRender.color = new Color(1, 1, 0.5f, 1); 
+                            SpriteRender.color = new Color(1, 1, 0.5f, 1);
                             break;
                         case 5:
                             SpriteRender.color = new Color(1, 0.7f, 0.3f, 1); // orange
@@ -174,10 +192,21 @@ public class BoardManager : MonoBehaviour
                 if (newnumber == oldnumber)
                 {
                     match++;
-                    if(j == col - 1)
+                    if (j == col - 1)
                     {
                         if (match >= 2)
                         {
+                            int[] Particle_Pos = new int[2];
+                            Particle_Pos[0] = i;
+                            Particle_Pos[1] = j - 1;
+                            ParticlesAnimation(Particle_Pos);
+                            Particle_Pos[0] = i;
+                            Particle_Pos[1] = j- 2;
+                            ParticlesAnimation(Particle_Pos);
+                            Particle_Pos[0] = i;
+                            Particle_Pos[1] = j- 3;
+                            ParticlesAnimation(Particle_Pos);
+
                             Debug.Log("match");
                             Debug.Log(match);
                             Gems_List[i, j] = 0;
@@ -188,14 +217,45 @@ public class BoardManager : MonoBehaviour
                             {
                                 Gems_List[i, j - 3] = 0;
                                 score += 1;
+                                Particle_Pos[0] = i;
+                                Particle_Pos[1] = j - 4;
+                                ParticlesAnimation(Particle_Pos);
                             }
+
                             if (match == 4)
                             {
                                 Gems_List[i, j - 4] = 0;
-                                score += 1;
+                                score += 2;
+                                Particle_Pos[0] = i;
+                                Particle_Pos[1] = j - 5;
+                                ParticlesAnimation(Particle_Pos);
                             }
+
+                            if (match == 5)
+                            {
+                                Gems_List[i, j - 5] = 0;
+                                score += 3;
+                                Particle_Pos[0] = i;
+                                Particle_Pos[1] = j - 6;
+                                ParticlesAnimation(Particle_Pos);
+                            }
+
+                            if (match == 6)
+                            {
+                                Gems_List[i, j - 6] = 0;
+                                score += 4;
+                                Particle_Pos[0] = i;
+                                Particle_Pos[1] = j - 7;
+                                ParticlesAnimation(Particle_Pos);
+                            }
+
                             match = 0;
                             GemsFall(Player_Pos);
+
+                            GameManager_Script.MoveNumber = 6;
+                            if(start)
+                            GameManager.SendMessage("MoveCheck");
+
                         }
                         match = 0;
                         Score_Text.text = score.ToString();
@@ -205,27 +265,73 @@ public class BoardManager : MonoBehaviour
                 {
                     if (match >= 2)
                     {
+                        int[] Particle_Pos = new int[2];
+                        Particle_Pos[0] = i;
+                        Particle_Pos[1] = j - 2;
+                        ParticlesAnimation(Particle_Pos);
+                        Particle_Pos[0] = i;
+                        Particle_Pos[1] = j - 3;
+                        ParticlesAnimation(Particle_Pos);
+                        Particle_Pos[0] = i;
+                        Particle_Pos[1] = j - 4;
+                        ParticlesAnimation(Particle_Pos);
+
+                        //_____________________________________
+
                         Debug.Log("match");
                         Debug.Log(match);
                         Gems_List[i, j - 1] = 0;
                         Gems_List[i, j - 2] = 0;
                         Gems_List[i, j - 3] = 0;
                         score += 3;
+
                         if (match == 3)
                         {
                             Gems_List[i, j - 4] = 0;
                             score += 1;
+                            Particle_Pos[0] = i;
+                            Particle_Pos[1] = j - 5;
+                            ParticlesAnimation(Particle_Pos);
                         }
+
                         if (match == 4)
                         {
                             Gems_List[i, j - 5] = 0;
-                            score += 1;
+                            score += 2;
+                            Particle_Pos[0] = i;
+                            Particle_Pos[1] = j - 6;
+                            ParticlesAnimation(Particle_Pos);
                         }
+
+                        if (match == 5)
+                        {
+                            Gems_List[i, j - 6] = 0;
+                            score += 3;
+                            Particle_Pos[0] = i;
+                            Particle_Pos[1] = j - 7;
+                            ParticlesAnimation(Particle_Pos);
+                        }
+
+                        if (match == 6)
+                        {
+                            Gems_List[i, j - 7] = 0;
+                            score += 4;
+                            Particle_Pos[0] = i;
+                            Particle_Pos[1] = j - 8;
+                            ParticlesAnimation(Particle_Pos);
+                        }
+
                         match = 0;
                         GemsFall(Player_Pos);
+
+                        GameManager_Script.MoveNumber = 6;
+                        if (start)
+                            GameManager.SendMessage("MoveCheck");
                     }
                     match = 0;
                     Score_Text.text = score.ToString();
+
+                   
                 }
                 oldnumber = Gems_List[i, j];
             }
@@ -255,33 +361,82 @@ public class BoardManager : MonoBehaviour
                     {
                         if (match_Hor >= 2)
                         {
+
+                            int[] Particle_Pos = new int[2];
+                            Particle_Pos[0] = i;
+                            Particle_Pos[1] = j - 1;
+                            ParticlesAnimation(Particle_Pos);
+                            Particle_Pos[0] = i - 1;
+                            Particle_Pos[1] = j - 1;
+                            ParticlesAnimation(Particle_Pos);
+                            Particle_Pos[0] = i - 2;
+                            Particle_Pos[1] = j - 1;
+                            ParticlesAnimation(Particle_Pos);
+
+                            //___________________________________
+
                             Debug.Log("match");
                             Debug.Log(match_Hor);
-                            Gems_List[i, j] = 0;
                             Gems_List[i - 1, j] = 0;
-                            Gems_List[i - 2, j] = 0; 
+                            Gems_List[i - 2, j] = 0;
+                            Gems_List[i - 3, j] = 0;
                             score += 3;
                             if (match_Hor == 3)
                             {
-                                Gems_List[i - 3, j] = 0;
+                                Gems_List[i - 4, j] = 0;
                                 score += 1;
+                                Particle_Pos[0] = i - 3;
+                                Particle_Pos[1] = j - 1;
+                                ParticlesAnimation(Particle_Pos);
                             }
                             if (match_Hor == 4)
                             {
-                                Gems_List[i - 4, j] = 0;
-                                score += 1;
+                                Gems_List[i - 5, j] = 0;
+                                score += 2;
+                                Particle_Pos[0] = i - 4;
+                                Particle_Pos[1] = j - 1;
+                                ParticlesAnimation(Particle_Pos);
+                            }
+
+                            if (match_Hor == 5)
+                            {
+                                Gems_List[i - 6, j] = 0;
+                                score += 3;
+                                Particle_Pos[0] = i - 5;
+                                Particle_Pos[1] = j - 1;
+                                ParticlesAnimation(Particle_Pos);
                             }
                             match_Hor = 0;
                             GemsFall(Player_Pos);
+
+                            GameManager_Script.MoveNumber = 6;
+                            if (start)
+                                GameManager.SendMessage("MoveCheck");
                         }
                         match_Hor = 0;
                         Score_Text.text = score.ToString();
+
+
                     }
                 }
                 else
                 {
                     if (match_Hor >= 2)
                     {
+
+                        int[] Particle_Pos = new int[2];
+                        Particle_Pos[0] = i - 1;
+                        Particle_Pos[1] = j - 1;
+                        ParticlesAnimation(Particle_Pos);
+                        Particle_Pos[0] = i - 2;
+                        Particle_Pos[1] = j - 1;
+                        ParticlesAnimation(Particle_Pos);
+                        Particle_Pos[0] = i - 3;
+                        Particle_Pos[1] = j - 1;
+                        ParticlesAnimation(Particle_Pos);
+
+                        //___________________________________
+
                         Debug.Log("match");
                         Debug.Log(match_Hor);
                         Gems_List[i - 1, j] = 0;
@@ -292,14 +447,33 @@ public class BoardManager : MonoBehaviour
                         {
                             Gems_List[i - 4, j] = 0;
                             score += 1;
+                            Particle_Pos[0] = i - 4;
+                            Particle_Pos[1] = j - 1;
+                            ParticlesAnimation(Particle_Pos);
                         }
                         if (match_Hor == 4)
                         {
                             Gems_List[i - 5, j] = 0;
-                            score += 1;
+                            score += 2;
+                            Particle_Pos[0] = i - 5;
+                            Particle_Pos[1] = j - 1;
+                            ParticlesAnimation(Particle_Pos);
+                        }
+
+                        if (match_Hor == 5)
+                        {
+                            Gems_List[i - 6, j] = 0;
+                            score += 3;
+                            Particle_Pos[0] = i - 6;
+                            Particle_Pos[1] = j - 1;
+                            ParticlesAnimation(Particle_Pos);
                         }
                         match_Hor = 0;
                         GemsFall(Player_Pos);
+
+                        GameManager_Script.MoveNumber = 6;
+                        if (start)
+                            GameManager.SendMessage("MoveCheck");
                     }
                     match_Hor = 0;
                     Score_Text.text = score.ToString();
@@ -315,65 +489,118 @@ public class BoardManager : MonoBehaviour
 
     void GemsFall(int[] Player_Pos)
     {
-        for (int i = 0; i < row; i++)
+        if (start)
         {
-            for (int j = 0; j < col; j++)
+            for (int i = 0; i < row; i++)
             {
-                if (Gems_List[i, j] == 0)
+                for (int j = 0; j < col; j++)
                 {
-                    if(j + 1 < col && Gems_List[i, j + 1] != 0)
+                    if (Gems_List[i, j] == 0)
                     {
-                        Gems_List[i, j] = Gems_List[i, j + 1];
-                        Gems_List[i, j + 1] = 0;
-                    }
-                    else if (j + 2 < col && Gems_List[i, j + 2] != 0)
-                    {
-                        Gems_List[i, j] = Gems_List[i, j + 2];
-                        Gems_List[i, j + 2] = 0;
-                    }
-                    else if (j + 3 < col && Gems_List[i, j + 3] != 0)
-                    {
-                        Gems_List[i, j] = Gems_List[i, j + 3];
-                        Gems_List[i, j + 3] = 0;
-                    }
-                    else if (j + 4 < col && Gems_List[i, j + 4] != 0)
-                    {
-                        Gems_List[i, j] = Gems_List[i, j + 4];
-                        Gems_List[i, j + 4] = 0;
-                    }
-                    else if (j + 5 < col && Gems_List[i, j + 5] != 0)
-                    {
-                        Gems_List[i, j] = Gems_List[i, j + 5];
-                        Gems_List[i, j + 5] = 0;
-                    }
-                    else if (j + 6 < col && Gems_List[i, j + 6] != 0)
-                    {
-                        Gems_List[i, j] = Gems_List[i, j + 6];
-                        Gems_List[i, j + 6] = 0;
-                    }
+                        if (j + 1 < col && Gems_List[i, j + 1] != 0)
+                        {
+                            Gems_List[i, j] = Gems_List[i, j + 1];
+                            Gems_List[i, j + 1] = 0;
+                        }
+                        else if (j + 2 < col && Gems_List[i, j + 2] != 0)
+                        {
+                            Gems_List[i, j] = Gems_List[i, j + 2];
+                            Gems_List[i, j + 2] = 0;
+                        }
+                        else if (j + 3 < col && Gems_List[i, j + 3] != 0)
+                        {
+                            Gems_List[i, j] = Gems_List[i, j + 3];
+                            Gems_List[i, j + 3] = 0;
+                        }
+                        else if (j + 4 < col && Gems_List[i, j + 4] != 0)
+                        {
+                            Gems_List[i, j] = Gems_List[i, j + 4];
+                            Gems_List[i, j + 4] = 0;
+                        }
+                        else if (j + 5 < col && Gems_List[i, j + 5] != 0)
+                        {
+                            Gems_List[i, j] = Gems_List[i, j + 5];
+                            Gems_List[i, j + 5] = 0;
+                        }
+                        else if (j + 6 < col && Gems_List[i, j + 6] != 0)
+                        {
+                            Gems_List[i, j] = Gems_List[i, j + 6];
+                            Gems_List[i, j + 6] = 0;
+                        }
 
+                    }
+                }
+
+            }
+
+            for (int i = 0; i < row; i++)
+            {
+                for (int j = 0; j < col; j++)
+                {
+                    if (Gems_List[i, j] == 7)
+                    {
+                        GameManager_Script.Player_row = i;
+                        GameManager_Script.Player_col = j;
+                        Player_Pos[0] = i;
+                        Player_Pos[1] = j;
+                        Player_Pos[2] = i;
+                        Player_Pos[3] = j;
+                    }
                 }
             }
 
+            GemsRenew(Player_Pos);
+
         }
 
-        for (int i = 0; i < row; i++)
+        if (!start)
         {
-            for (int j = 0; j < col; j++)
+            for (int i = 0; i < row; i++)
             {
-                if (Gems_List[i, j] == 7)
+                for (int j = 0; j < col; j++)
                 {
-                    GameManager_Script.Player_row = i;
-                    GameManager_Script.Player_col = j;
-                    Player_Pos[0] = i;
-                    Player_Pos[1] = j;
-                    Player_Pos[2] = i;
-                    Player_Pos[3] = j;
+                    if (Gems_List[i, j] == 0)
+                    {
+                        if (j + 1 < col && Gems_List[i, j + 1] != 0 && Gems_List[i, j + 1] != 7)
+                        {
+                            Gems_List[i, j] = Gems_List[i, j + 1];
+                            Gems_List[i, j + 1] = 0;
+                        }
+                        else if (j + 2 < col && Gems_List[i, j + 2] != 0 && Gems_List[i, j + 1] != 7)
+                        {
+                            Gems_List[i, j] = Gems_List[i, j + 2];
+                            Gems_List[i, j + 2] = 0;
+                        }
+                        else if (j + 3 < col && Gems_List[i, j + 3] != 0 && Gems_List[i, j + 1] != 7)
+                        {
+                            Gems_List[i, j] = Gems_List[i, j + 3];
+                            Gems_List[i, j + 3] = 0;
+                        }
+                        else if (j + 4 < col && Gems_List[i, j + 4] != 0 && Gems_List[i, j + 1] != 7)
+                        {
+                            Gems_List[i, j] = Gems_List[i, j + 4];
+                            Gems_List[i, j + 4] = 0;
+                        }
+                        else if (j + 5 < col && Gems_List[i, j + 5] != 0 && Gems_List[i, j + 1] != 7)
+                        {
+                            Gems_List[i, j] = Gems_List[i, j + 5];
+                            Gems_List[i, j + 5] = 0;
+                        }
+                        else if (j + 6 < col && Gems_List[i, j + 6] != 0 && Gems_List[i, j + 1] != 7)
+                        {
+                            Gems_List[i, j] = Gems_List[i, j + 6];
+                            Gems_List[i, j + 6] = 0;
+                        }
+
+                    }
                 }
+
             }
+
+            GemsRenew(Player_Pos);
+
         }
 
-                GemsRenew(Player_Pos);
     }
 
 
@@ -391,6 +618,16 @@ public class BoardManager : MonoBehaviour
         }
 
         LoadBoard(Player_Pos);
+
+    }
+
+    void ParticlesAnimation(int[] Particle_Pos)
+    {
+        if (start)
+        {
+            GameObject Particle = Instantiate(Particles);
+            Particle.transform.position = new Vector3(Particle_Pos[0], Particle_Pos[1], 0);
+        }
 
     }
 
