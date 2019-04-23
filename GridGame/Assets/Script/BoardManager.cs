@@ -12,15 +12,34 @@ public class BoardManager : MonoBehaviour
     public bool start = false;
     public bool move = false;
     public int[,] Gems_List = new int[5, 7];
+    public int[,] Gems_List_old = new int[5, 7];
     public Sprite Gem_Image;
     public GameObject Gems;
     public GameObject Player_Perfab;
+    public GameObject Enemy_Perfab;
     public GameObject GameManager;
     public GameObject Score;
     public GameObject Particles;
+
+
+    public Sprite Mushroom_green;
+    public Sprite Mushroom_yellow;
+    public Sprite Mushroom_orange;
+    public Sprite Mushroom_red;
+    public Sprite Mushroom_purple;
+    public Sprite Mushroom_blue;
+
+    public RuntimeAnimatorController Mushroom_green_An;
+    public RuntimeAnimatorController Mushroom_yellow_An;
+    public RuntimeAnimatorController Mushroom_orange_An;
+    public RuntimeAnimatorController Mushroom_red_An;
+    public RuntimeAnimatorController Mushroom_purple_An;
+    public RuntimeAnimatorController Mushroom_blue_An;
+
     TextMeshProUGUI Score_Text;
     GameManager GameManager_Script;
     GameObject Player;
+    GameObject Enemy;
     int[] Player_Pos_Start = new int[4];
 
     void Start()
@@ -53,32 +72,47 @@ public class BoardManager : MonoBehaviour
                 {
                     GameObject Gem = Instantiate(Gems);
                     SpriteRenderer SpriteRender = Gem.GetComponent<SpriteRenderer>();
+                    Animator Animator = Gem.GetComponent<Animator>();
                     switch (Gems_List[i, j])
                     {
+                    
                         case 1:
-                            SpriteRender.color = new Color(1, 0.6f, 0.6f, 1); // red
+                            SpriteRender.sprite = Mushroom_green;
+                            Animator.runtimeAnimatorController = Mushroom_green_An;
                             break;
                         case 2:
-                            SpriteRender.color = new Color(0.7f, 1, 1, 1);
+                            SpriteRender.sprite = Mushroom_yellow;
+                            Animator.runtimeAnimatorController = Mushroom_yellow_An;
                             break;
                         case 3:
-                            SpriteRender.color = new Color(0.6f, 1, 0.7f, 1);
+                            SpriteRender.sprite = Mushroom_blue;
+                            Animator.runtimeAnimatorController = Mushroom_blue_An;
                             break;
                         case 4:
-                            SpriteRender.color = new Color(1, 1, 0.5f, 1);
+                            SpriteRender.sprite = Mushroom_red;
+                            Animator.runtimeAnimatorController = Mushroom_red_An;
                             break;
                         case 5:
-                            SpriteRender.color = new Color(1, 0.7f, 0.3f, 1); // orange
+                            SpriteRender.sprite = Mushroom_orange;
+                            Animator.runtimeAnimatorController = Mushroom_orange_An;
                             break;
-                    
+
 
                     }
-                    Gem.transform.position = new Vector3(i, j - 1, 0);
+                    Gem.transform.position = new Vector3((i * 1.4f) - 0.5f, (j * 1.4f) - 2.9f, 0);
 
                 }
 
             }
 
+        }
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < col; j++)
+            {
+                int num = Gems_List[i, j];
+                Gems_List_old[i, j] = num;
+            }
         }
         CheckMatchVer(Player_Pos_Start);
         CheckMatchHor(Player_Pos_Start);
@@ -92,14 +126,19 @@ public class BoardManager : MonoBehaviour
                 {
                     GameObject Gem = Instantiate(Gems);
                     SpriteRenderer SpriteRender = Gem.GetComponent<SpriteRenderer>();
-                    SpriteRender.color = new Color(0.7f, 0.6f, 1, 1); 
+                    Animator Animator = Gem.GetComponent<Animator>();
+                    SpriteRender.sprite = Mushroom_purple;
+                    Animator.runtimeAnimatorController = Mushroom_purple_An;
                     Gem.transform.position = new Vector3(i, j - 1, 0);
                 }
 
             }
         }
+
         Player = Instantiate(Player_Perfab);
-        Player.transform.position = new Vector3(2, 3 - 1, 0);
+        Enemy =  Instantiate(Enemy_Perfab);
+        Player.transform.position = new Vector3((2 * 1.4f) - 0.5f, (3 * 1.4f) - 2.6f, -1);
+        Enemy.transform.position  = new Vector3(-0.5f, (6 * 1.4f) - 2.5f, -1);
         score = 0;
         start = true;
         move = true;
@@ -130,33 +169,70 @@ public class BoardManager : MonoBehaviour
                 {
                     GameObject Gem = Instantiate(Gems);
                     SpriteRenderer SpriteRender = Gem.GetComponent<SpriteRenderer>();
+                    Animator Animator = Gem.GetComponent<Animator>();
                     switch (Gems_List[i, j])
                     {
+
                         case 1:
-                            SpriteRender.color = new Color(1, 0.6f, 0.6f, 1); // red
+                            SpriteRender.sprite = Mushroom_green;
+                            if (Gems_List[i, j] != Gems_List_old[i, j])
+                            {
+                                Animator.runtimeAnimatorController = Mushroom_green_An;
+                            }
                             break;
                         case 2:
-                            SpriteRender.color = new Color(0.7f, 1, 1, 1);
+                            SpriteRender.sprite = Mushroom_yellow;
+                            if (Gems_List[i, j] != Gems_List_old[i, j])
+                            {
+                                Animator.runtimeAnimatorController = Mushroom_yellow_An;
+                            }
                             break;
                         case 3:
-                            SpriteRender.color = new Color(0.6f, 1, 0.7f, 1);
+                            SpriteRender.sprite = Mushroom_blue;
+                            if (Gems_List[i, j] != Gems_List_old[i, j])
+                            {
+                                Animator.runtimeAnimatorController = Mushroom_blue_An;
+                            }
                             break;
                         case 4:
-                            SpriteRender.color = new Color(1, 1, 0.5f, 1);
+                            SpriteRender.sprite = Mushroom_red;
+                            if (Gems_List[i, j] != Gems_List_old[i, j])
+                            {
+                                Animator.runtimeAnimatorController = Mushroom_red_An;
+                            }
                             break;
                         case 5:
-                            SpriteRender.color = new Color(1, 0.7f, 0.3f, 1); // orange
+                            SpriteRender.sprite = Mushroom_orange;
+                            if (Gems_List[i, j] != Gems_List_old[i, j])
+                            {
+                                Animator.runtimeAnimatorController = Mushroom_orange_An;
+                            }
                             break;
                         case 6:
-                            SpriteRender.color = new Color(0.7f, 0.6f, 1, 1); // purple
+                            SpriteRender.sprite = Mushroom_purple;
+                            if (Gems_List[i, j] != Gems_List_old[i, j])
+                            {
+                                Animator.runtimeAnimatorController = Mushroom_purple_An;
+                            }
                             break;
+
+
                     }
-                    Gem.transform.position = new Vector3(i, j - 1, 0);
+                    Gem.transform.position = new Vector3((i * 1.4f) - 0.5f, (j * 1.4f) - 2.9f, 0);
 
                 }
 
             }
 
+        }
+
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < col; j++)
+            {
+                int num = Gems_List[i, j];
+                Gems_List_old[i, j] = num ;
+            }
         }
         CheckMatchVer(Player_Pos);
         CheckMatchHor(Player_Pos);
@@ -170,9 +246,25 @@ public class BoardManager : MonoBehaviour
     {
 
         //Debug.Log("call");
-        int row = Player_Pos[2];
-        int col = Player_Pos[3] - 1;
-        Player.transform.position = new Vector3(row, col, 0);
+        float player_row = Player_Pos[2];
+        float player_col = Player_Pos[3];
+        player_row = (player_row * 1.4f) - 0.5f;
+        player_col = (player_col * 1.4f) - 2.6f;
+        Player.transform.position = new Vector3(player_row, player_col, -1);
+
+    }
+
+    //__________________________________________________________________________
+
+    void PlaceEnemy(int[] Enemy_Pos)
+    {
+
+        //Debug.Log("call");
+        float enemy_row = Enemy_Pos[0];
+        float enemy_col = Enemy_Pos[1];
+        enemy_row = (enemy_row * 1.4f) - 0.5f;
+        enemy_col = (enemy_col * 1.4f) - 2.5f;
+        Enemy.transform.position = new Vector3(enemy_row, enemy_col, -1);
 
     }
 
@@ -258,7 +350,7 @@ public class BoardManager : MonoBehaviour
                             match = 0;
                             GemsFall(Player_Pos);
 
-                            GameManager_Script.MoveNumber = 6;
+                            GameManager_Script.MoveNumber = 8;
                             if(start)
                             GameManager.SendMessage("MoveCheck");
 
@@ -330,7 +422,7 @@ public class BoardManager : MonoBehaviour
                         match = 0;
                         GemsFall(Player_Pos);
 
-                        GameManager_Script.MoveNumber = 6;
+                        GameManager_Script.MoveNumber = 8;
                         if (start)
                             GameManager.SendMessage("MoveCheck");
                     }
@@ -415,7 +507,7 @@ public class BoardManager : MonoBehaviour
                             match_Hor = 0;
                             GemsFall(Player_Pos);
 
-                            GameManager_Script.MoveNumber = 6;
+                            GameManager_Script.MoveNumber = 8;
                             if (start)
                                 GameManager.SendMessage("MoveCheck");
                         }
@@ -477,7 +569,7 @@ public class BoardManager : MonoBehaviour
                         match_Hor = 0;
                         GemsFall(Player_Pos);
 
-                        GameManager_Script.MoveNumber = 6;
+                        GameManager_Script.MoveNumber = 8;
                         if (start)
                             GameManager.SendMessage("MoveCheck");
                     }
@@ -655,7 +747,12 @@ public class BoardManager : MonoBehaviour
         if (start)
         {
             GameObject Particle = Instantiate(Particles);
-            Particle.transform.position = new Vector3(Particle_Pos[0], Particle_Pos[1], 0);
+            float Particle_row = Particle_Pos[0];
+            float Particle_col = Particle_Pos[1] + 1;
+            Particle_row = (Particle_row * 1.4f) - 0.5f;
+            Particle_col = (Particle_col * 1.4f) - 2.9f;
+            Particle.transform.position = new Vector3(Particle_row, Particle_col, -10);
+
         }
 
     }
